@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BIO-MATE · ระบบบริหารหุ่นยนต์โรงพยาบาล</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap">
+<style>
+:root{--bg:#f3f6f8;--card:#fff;--ink:#12303b;--mut:#5b717a;--line:#d5dfe4;--acc:#0f6d7a;--room:#e6f0f3;--cor:#fafcfd;--ok:#2f9e6e;--go:#2b7de0;--chg:#d19a1c;--bad:#d64545;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1a1f;--card:#15262d;--ink:#e4eef1;--mut:#8ea5ae;--line:#27404a;--acc:#4fc3d1;--room:#1c333b;--cor:#101f25;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1a1f;--card:#15262d;--ink:#e4eef1;--mut:#8ea5ae;--line:#27404a;--acc:#4fc3d1;--room:#1c333b;--cor:#101f25;color-scheme:dark}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 "IBM Plex Sans Thai","Noto Sans Thai",system-ui,sans-serif}
+header{background:var(--card);border-bottom:1px solid var(--line);padding:12px 20px;display:flex;flex-wrap:wrap;gap:12px 28px;align-items:center;position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+h1{margin:0;font-size:20px;font-weight:600;letter-spacing:.04em;color:var(--acc)}
+.sub{font-size:12px;color:var(--mut)}
+nav{display:flex;gap:4px;flex:1}
+nav button{border:0;background:none;color:var(--mut);font:inherit;padding:8px 14px;border-radius:8px;cursor:pointer}
+nav button.on{background:var(--room);color:var(--ink);font-weight:600}
+nav button:focus-visible,.btn:focus-visible,select:focus-visible,.card:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.pill{font-size:12px;padding:3px 10px;border-radius:99px;background:var(--room);color:var(--ok);font-weight:500}
+.note{background:var(--room);color:var(--mut);font-size:12px;padding:6px 20px;border-bottom:1px solid var(--line)}
+main{padding:20px;max-width:1200px;margin:auto}
+.pg{display:none}.pg.on{display:block}
+.stats{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 18px;min-width:130px}
+.stat b{font-size:28px;font-weight:600;display:block;line-height:1.2}.stat span{font-size:13px;color:var(--mut)}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:16px}
+@media(max-width:860px){.grid{grid-template-columns:1fr}}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px}
+.panel h2{margin:0 0 8px;font-size:15px;font-weight:600}
+svg.map{width:100%;height:auto;display:block}
+.room{fill:var(--room);stroke:var(--line);stroke-width:1.5;cursor:pointer}
+.room:hover{stroke:var(--acc)}
+.room.sel{stroke:var(--acc);stroke-width:3}
+.rl{font-size:13px;font-weight:600;fill:var(--ink);pointer-events:none}.rn{font-size:11px;fill:var(--mut);pointer-events:none}
+.rb{cursor:pointer}.rb text{font-size:10px;font-weight:600;fill:#fff;pointer-events:none}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--mut);margin-top:8px}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;cursor:pointer;border-left-width:5px}
+.card b.bt{font-size:26px;font-weight:600}
+.bar{height:6px;border-radius:3px;background:var(--line);margin:4px 0 8px;overflow:hidden}.bar i{display:block;height:100%}
+.tag{font-size:12px;font-weight:600}
+dl{margin:0;font-size:13px}dt{color:var(--mut);float:left;clear:left;width:110px}dd{margin:0 0 4px 110px}
+.f{display:grid;gap:4px;margin-bottom:12px}.f label{font-size:13px;font-weight:600}
+select{font:inherit;padding:8px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);width:100%}
+.btn{border:0;background:var(--acc);color:var(--bg);font:inherit;font-weight:600;padding:10px 16px;border-radius:8px;cursor:pointer;width:100%}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.msg{font-size:13px;margin:8px 0;padding:8px 10px;border-radius:8px;background:var(--room)}.msg.bad{color:var(--bad)}
+.hint{font-size:12px;color:var(--mut);margin:0 0 8px}
+ol.steps{list-style:none;margin:8px 0 14px;padding:0}
+ol.steps li{padding:2px 0 2px 22px;position:relative;font-size:13px;color:var(--mut)}
+ol.steps li:before{content:"";position:absolute;left:3px;top:8px;width:10px;height:10px;border-radius:50%;border:2px solid var(--line)}
+ol.steps li.d{color:var(--ink)}ol.steps li.d:before{background:var(--ok);border-color:var(--ok)}
+ol.steps li.c{color:var(--ink);font-weight:600}ol.steps li.c:before{border-color:var(--go);background:var(--go)}
+.mh{font-size:13px;font-weight:600;margin-top:10px}
+@media(prefers-reduced-motion:no-preference){.pulse{animation:p 1.4s infinite}@keyframes p{50%{opacity:.4}}}
+</style>
+</head>
+<body>
+<header>
+<div><h1>BIO-MATE</h1><div class="sub">ระบบบริหารหุ่นยนต์ขนส่งในโรงพยาบาล</div></div>
+<nav id="nav"><button data-t="ov" class="on">ภาพรวมอาคาร</button><button data-t="fl">หุ่นยนต์ทั้งหมด</button><button data-t="mc">สั่งภารกิจ</button></nav>
+<span class="pill">● ระบบออนไลน์</span>
+</header>
+<div class="note">ต้นแบบหน้าจอ: ข้อมูลทั้งหมดเป็นการจำลอง ยังไม่ได้เชื่อมต่อหุ่นยนต์จริง · อาคารชั้น 1</div>
+<main>
+<section class="pg on" id="ov">
+<div class="stats" id="stats"></div>
+<div class="grid">
+<div class="panel"><h2>แผนผังอาคาร ชั้น 1</h2><div class="map-box"></div>
+<div class="legend"><span><i class="dot" style="background:var(--ok)"></i>พร้อมใช้งาน</span><span><i class="dot" style="background:var(--go)"></i>กำลังปฏิบัติภารกิจ</span><span><i class="dot" style="background:var(--chg)"></i>กำลังชาร์จ</span><span><i class="dot" style="background:var(--bad)"></i>ต้องตรวจสอบ</span></div></div>
+<div class="panel det"><h2>รายละเอียด</h2><p class="hint">กดห้องหรือหุ่นยนต์บนแผนที่เพื่อดูข้อมูล</p></div>
+</div>
+</section>
+<section class="pg" id="fl">
+<div class="grid"><div class="cards" id="cards"></div><div class="panel det"><h2>รายละเอียด</h2><p class="hint">กดการ์ดหุ่นยนต์เพื่อดูข้อมูล</p></div></div>
+</section>
+<section class="pg" id="mc">
+<div class="grid">
+<div class="panel"><h2>สร้างภารกิจใหม่</h2>
+<div class="f"><label for="sf">1. จุดรับตัวอย่าง</label><select id="sf"></select></div>
+<div class="f"><label for="st">2. จุดส่งตัวอย่าง</label><select id="st"></select></div>
+<div class="f"><label for="sb">3. เลือกหุ่นยนต์</label><select id="sb"></select></div>
+<p class="hint">หรือกดห้องบนแผนที่: ครั้งแรกเลือกจุดรับ ครั้งที่สองเลือกจุดส่ง</p>
+<div class="map-box" data-pick="1"></div>
+<div class="msg" id="sum"></div>
+<button class="btn" id="go" disabled>ยืนยันและส่งภารกิจ</button>
+</div>
+<div class="panel"><h2>ติดตามภารกิจ</h2><div id="trk"><p class="hint">ยังไม่มีภารกิจ</p></div></div>
+</div>
+</section>
+</main>
+<script>
+const ST={available:['พร้อมใช้งาน','var(--ok)'],mission:['กำลังปฏิบัติภารกิจ','var(--go)'],charging:['กำลังชาร์จ','var(--chg)'],alert:['ต้องตรวจสอบ','var(--bad)']};
+const rooms=[['ER-01','ห้องฉุกเฉิน',20,20,160,130],['LAB-01','ห้องเจาะเลือด',190,20,130,130],['LAB-02','ห้องปฏิบัติการ',330,20,150,130],['SP-01','ห้องเก็บตัวอย่าง',490,20,130,130],['NUR-01','ห้องพยาบาล',630,20,150,130],['CHG-01','จุดชาร์จ',20,280,150,120],['REST-01','จุดพักหุ่นยนต์',180,280,130,120]].map(a=>({id:a[0],n:a[1],x:a[2],y:a[3],w:a[4],h:a[5]}));
+const RM=Object.fromEntries(rooms.map(r=>[r.id,r]));
+const door=r=>[r.x+r.w/2,r.y<200?150:280];
+const pathTo=(b,id)=>{const d=door(RM[id]),p=[];if(Math.abs(b.y-215)>1)p.push([b.x,215]);p.push([d[0],215],d);return p};
+const bots=[
+{id:'BM-001',st:'mission',bat:86,x:100,y:215,path:[],temp:4.2},
+{id:'BM-002',st:'available',bat:92,x:245,y:280,path:[],temp:4.0},
+{id:'BM-003',st:'charging',bat:35,x:95,y:280,path:[],temp:4.1},
+{id:'BM-004',st:'alert',bat:18,x:555,y:215,path:[],temp:6.8,why:'แบตเตอรี่ต่ำ และเซนเซอร์ด้านหน้าไม่ตอบสนอง'}];
+const BM=Object.fromEntries(bots.map(b=>[b.id,b]));
+const STEPS=[['สร้างภารกิจแล้ว','รับคำสั่งขนส่ง'],['มอบหมายหุ่นยนต์','ระบบเลือกหุ่นยนต์'],['กำลังไปจุดรับ','เดินทางไปรับตัวอย่าง'],['รับตัวอย่างแล้ว','ยืนยันรับกล่องตัวอย่าง'],['กำลังนำส่ง','เดินทางไปจุดส่ง'],['ส่งมอบสำเร็จ','บันทึกเวลาแล้ว']];
+const missions=[];let mid=100;
+const tm=()=>new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+function newMission(b,from,to){const m={id:'M-'+(++mid),from,to,bot:b.id,step:2,t:[tm(),tm(),tm()]};missions.unshift(m);b.m=m;b.st='mission';b.path=pathTo(b,from);return m}
+const m0=newMission(BM['BM-001'],'ER-01','LAB-02');
+(()=>{const b=BM['BM-001'],m=missions[0];m.from='ER-01';m.to='LAB-02';m.step=4;m.t=[tm(),tm(),tm(),tm(),tm()];b.path=pathTo(b,'LAB-02')})();
+const loc=b=>{const r=rooms.find(r=>{const d=door(r);return Math.hypot(d[0]-b.x,d[1]-b.y)<14});return r?r.id:'ทางเดิน'};
+function mapSVG(){
+let s='<svg class="map" viewBox="0 0 800 420" role="img" aria-label="แผนผังอาคารชั้น 1"><defs><pattern id="h" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="10" stroke="#d64545" stroke-opacity=".35" stroke-width="3"/></pattern></defs>';
+s+='<rect x="20" y="150" width="760" height="130" fill="var(--cor)" stroke="var(--line)"/>';
+s+='<rect x="320" y="280" width="460" height="120" fill="url(#h)" stroke="var(--line)"/><text x="550" y="345" text-anchor="middle" class="rn">พื้นที่ห้ามเข้า (หอผู้ป่วยใน)</text>';
+s+='<line x1="40" y1="215" x2="760" y2="215" stroke="var(--acc)" stroke-width="2" stroke-dasharray="6 6" opacity=".6"/>';
+rooms.forEach(r=>{const d=door(r);
+s+=`<rect class="room" data-room="${r.id}" x="${r.x}" y="${r.y}" width="${r.w}" height="${r.h}" rx="6" tabindex="0"/><text class="rl" x="${r.x+10}" y="${r.y+(r.y<200?24:24)}">${r.id}</text><text class="rn" x="${r.x+10}" y="${r.y+42}">${r.n}</text><circle cx="${d[0]}" cy="${d[1]}" r="4" fill="var(--acc)"/>`});
+bots.forEach(b=>{s+=`<g class="rb" data-r="${b.id}"><circle r="15" stroke="var(--card)" stroke-width="2"/><text text-anchor="middle" y="4">${b.id.slice(-2)}</text></g>`});
+return s+'</svg>'}
+document.querySelectorAll('.map-box').forEach(e=>e.innerHTML=mapSVG());
+const $=s=>document.querySelector(s);
+let pick='from',fromV='',toV='';
+function room(id){const r=RM[id];return `<h2>${r.id} · ${r.n}</h2><dl><dt>ชั้น</dt><dd>1</dd><dt>จุดรับ/ส่ง</dt><dd>${r.id.startsWith('CHG')||r.id.startsWith('REST')?'ไม่ใช่ (จุดบริการหุ่นยนต์)':'ใช่'}</dd><dt>หุ่นยนต์ที่นี่</dt><dd>${bots.filter(b=>loc(b)==r.id).map(b=>b.id).join(', ')||'ไม่มี'}</dd></dl>`}
+function botDet(b){const s=ST[b.st],m=b.m&&b.m.step<5?b.m:null;
+return `<h2>${b.id} <span class="tag" style="color:${s[1]}">${s[0]}</span></h2><dl><dt>ตำแหน่ง</dt><dd>ชั้น 1 · ${loc(b)}</dd><dt>ภารกิจ</dt><dd>${m?m.id+': '+m.from+' → '+m.to:'ไม่มี'}</dd><dt>แบตเตอรี่</dt><dd>${Math.round(b.bat)}%</dd><dt>ระบบนำทาง</dt><dd>${b.st=='alert'?'เซนเซอร์ไม่ตอบสนอง':'ปกติ'}</dd><dt>แขนกล/Gripper</dt><dd>${b.st=='alert'?'หยุดทำงาน':'พร้อม'}</dd><dt>อุณหภูมิช่องเก็บ</dt><dd>${b.temp.toFixed(1)} °C</dd><dt>สัญญาณเตือน</dt><dd>${b.why||(b.bat<30?'แบตเตอรี่ต่ำ':'ไม่มี')}</dd></dl>`}
+let sel=null;
+function showDet(){document.querySelectorAll('.det').forEach(e=>{if(!sel)return;e.innerHTML=sel[0]=='r'?botDet(BM[sel[1]]):room(sel[1])})}
+document.addEventListener('click',e=>{
+const rb=e.target.closest('[data-r]'),rm=e.target.closest('[data-room]'),cd=e.target.closest('.card');
+if(rb){sel=['r',rb.dataset.r]}else if(cd){sel=['r',cd.dataset.b]}else if(rm){
+const id=rm.dataset.room;sel=['m',id];
+if(rm.closest('[data-pick]')&&!/^(CHG|REST)/.test(id)){if(pick=='from'){$('#sf').value=id;pick='to'}else{$('#st').value=id;pick='from'}check()}}
+showDet()});
+const opts=rooms.filter(r=>!/^(CHG|REST)/.test(r.id)).map(r=>`<option value="${r.id}">${r.n} (${r.id})</option>`).join('');
+$('#sf').innerHTML='<option value="">เลือกห้อง</option>'+opts;$('#st').innerHTML='<option value="">เลือกห้อง</option>'+opts;
+$('#sb').innerHTML='<option value="auto">เลือกให้อัตโนมัติ</option>'+bots.map(b=>`<option value="${b.id}">${b.id}</option>`).join('');
+const why=b=>b.st=='mission'?`${b.id} กำลังทำภารกิจ ${b.m?b.m.id:''}`:b.st=='charging'?`${b.id} กำลังชาร์จที่ CHG-01 (${Math.round(b.bat)}%)`:b.st=='alert'?`${b.id} ผิดปกติ: ${b.why}`:b.bat<30?`${b.id} แบตเตอรี่ต่ำ (${Math.round(b.bat)}%)`:'';
+let plan=null;
+function check(){
+const f=$('#sf').value,t=$('#st').value,sb=$('#sb').value,box=$('#sum'),go=$('#go');plan=null;go.disabled=true;box.className='msg';
+document.querySelectorAll('[data-pick] .room').forEach(r=>r.classList.toggle('sel',r.dataset.room==f||r.dataset.room==t));
+if(!f||!t){box.textContent='เลือกจุดรับและจุดส่งเพื่อดูสรุปภารกิจ';return}
+if(f==t){box.className='msg bad';box.textContent='จุดรับและจุดส่งต้องเป็นคนละห้อง';return}
+let b;
+if(sb=='auto'){const ok=bots.filter(x=>x.st=='available'&&x.bat>=30).sort((a,c)=>Math.hypot(a.x-door(RM[f])[0],a.y-door(RM[f])[1])-Math.hypot(c.x-door(RM[f])[0],c.y-door(RM[f])[1]));
+if(!ok.length){box.className='msg bad';box.innerHTML='ไม่มีหุ่นยนต์ที่พร้อมรับภารกิจ<br>'+bots.map(why).filter(Boolean).join('<br>');return}b=ok[0]}
+else{b=BM[sb];const w=(b.st!='available'||b.bat<30)?why(b):'';if(w){box.className='msg bad';box.textContent='สั่งงานไม่ได้: '+w;return}}
+plan={f,t,b};box.innerHTML=`<b>สรุปภารกิจ</b><br>รับที่: ${RM[f].n} (${f})<br>ส่งที่: ${RM[t].n} (${t})<br>หุ่นยนต์: ${b.id}${sb=='auto'?' (ระบบเลือกให้)':''} · แบตเตอรี่ ${Math.round(b.bat)}%`;go.disabled=false}
+['sf','st','sb'].forEach(i=>$('#'+i).addEventListener('change',check));
+$('#go').addEventListener('click',()=>{if(!plan)return;newMission(plan.b,plan.f,plan.t);$('#sf').value=$('#st').value='';$('#sb').value='auto';pick='from';check();draw()});
+document.querySelectorAll('#nav button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('#nav button,.pg').forEach(e=>e.classList.remove('on'));b.classList.add('on');$('#'+b.dataset.t).classList.add('on')}));
+function onArrive(b){const m=b.m;if(!m)return;
+if(m.step==2){m.step=3;m.t[3]=tm();b.wait=true;setTimeout(()=>{m.step=4;m.t[4]=tm();b.path=pathTo(b,m.to);b.wait=false},1500)}
+else if(m.step==4){m.step=5;m.t[5]=tm();b.st='available';b.bat=Math.max(5,b.bat-4)}}
+function tick(){bots.forEach(b=>{
+if(b.path.length){const p=b.path[0],dx=p[0]-b.x,dy=p[1]-b.y,d=Math.hypot(dx,dy);if(d<2.5){b.x=p[0];b.y=p[1];b.path.shift();if(!b.path.length)onArrive(b)}else{b.x+=dx/d*2.5;b.y+=dy/d*2.5}}
+document.querySelectorAll(`[data-r="${b.id}"]`).forEach(g=>{g.setAttribute('transform',`translate(${b.x} ${b.y})`);const c=g.firstChild;c.setAttribute('fill',ST[b.st][1]);c.classList.toggle('pulse',b.st=='alert')})})}
+function draw(){
+const n=bots.filter(b=>b.st=='mission').length,al=bots.filter(b=>b.st=='alert').length;
+$('#stats').innerHTML=`<div class="stat"><b>${bots.length}</b><span>หุ่นยนต์ทั้งหมด</span></div><div class="stat"><b>${n}</b><span>กำลังทำภารกิจ</span></div><div class="stat"><b style="color:${al?'var(--bad)':'inherit'}">${al}</b><span>แจ้งเตือน</span></div>`;
+$('#cards').innerHTML=bots.map(b=>{const s=ST[b.st],m=b.m&&b.m.step<5?b.m:null;return `<div class="card" tabindex="0" data-b="${b.id}" style="border-left-color:${s[1]}"><b>${b.id}</b> <span class="tag" style="color:${s[1]}">${s[0]}</span><div><b class="bt">${Math.round(b.bat)}%</b> <span class="sub">แบตเตอรี่</span></div><div class="bar"><i style="width:${b.bat}%;background:${b.bat<30?'var(--bad)':s[1]}"></i></div><div class="sub">${m?'กำลังไป '+(m.step<4?m.from:m.to):b.st=='alert'?'ต้องตรวจสอบ':b.st=='charging'?'กำลังชาร์จ':'พร้อมรับภารกิจ'}<br>ชั้น 1 · ${loc(b)}</div></div>`}).join('');
+$('#trk').innerHTML=missions.length?missions.map(m=>`<div class="mh">${m.id} · ${m.from} → ${m.to} (${m.bot})</div><ol class="steps">${STEPS.map((s,i)=>`<li class="${i<m.step?'d':i==m.step?'c':''}">${s[0]}${m.t[i]?' <span class="sub">'+m.t[i]+'</span>':''}</li>`).join('')}</ol>`).join(''):'<p class="hint">ยังไม่มีภารกิจ</p>';
+if(sel)showDet()}
+setInterval(()=>{bots.forEach(b=>{if(b.st=='charging'){b.bat=Math.min(100,b.bat+.8);if(b.bat>=100)b.st='available'}});draw()},700);
+setInterval(tick,50);draw();tick();check();
+</script>
+</body>
+</html>
